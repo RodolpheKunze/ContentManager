@@ -1,0 +1,35 @@
+# docker/elasticsearch/config/elasticsearch.yml
+cluster:
+  name: cms-cluster
+  
+node:
+  name: cms-node-1
+  
+path:
+  data: /usr/share/elasticsearch/data
+  logs: /usr/share/elasticsearch/logs
+
+network:
+  host: 0.0.0.0
+  
+discovery:
+  type: single-node
+
+xpack:
+  security:
+    enabled: false
+    
+http:
+  port: 9200
+  cors:
+    enabled: true
+    allow-origin: "*"
+    allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+    allow-headers: X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization
+    
+indices:
+  memory:
+    index_buffer_size: 10%
+
+bootstrap:
+  memory_lock: true
