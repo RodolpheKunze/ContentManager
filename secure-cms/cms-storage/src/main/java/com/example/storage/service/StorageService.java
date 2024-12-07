@@ -11,6 +11,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
@@ -79,5 +80,12 @@ public class StorageService {
             
         // Decrypt content
         return encryptionService.decrypt(encryptedContent, masterKey);
+    }
+
+    public void deleteDocument(String key) throws Exception {
+    s3Client.deleteObject(DeleteObjectRequest.builder()
+        .bucket(bucket)
+        .key(key)
+        .build());
     }
 }

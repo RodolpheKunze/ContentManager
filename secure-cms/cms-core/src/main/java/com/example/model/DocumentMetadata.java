@@ -6,8 +6,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.LocalDateTime;
 import java.util.Map;
+import java.time.LocalDateTime;
+
 
 @Data
 @Document(indexName = "documents")
@@ -29,10 +30,10 @@ public class DocumentMetadata {
     
     @Field(type = FieldType.Date)
     private LocalDateTime uploadDate;
-    
+
     @Field(type = FieldType.Date)
     private LocalDateTime lastModifiedDate;
-    
+
     @Field(type = FieldType.Object)
     private Map<String, String> customMetadata;
 }

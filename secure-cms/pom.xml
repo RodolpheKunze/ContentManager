@@ -23,6 +23,7 @@
         <aws.sdk.version>2.20.43</aws.sdk.version>
         <aws.sdk.version>2.20.43</aws.sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <joda.version>2.13.0</joda.version>
     </properties>
     
     <dependencyManagement>
@@ -72,6 +73,7 @@
                         <target>${java.version}</target>
                         <compilerArgs>
                             <arg>--enable-preview</arg>
+                            <arg>-parameters</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>

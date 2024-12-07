@@ -1,10 +1,22 @@
 package com.example.api.controller;
 
 import com.example.api.dto.DocumentUploadRequest;
+import com.example.model.DocumentMetadata;
 import com.example.service.DocumentService;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 
 @RestController
 @RequestMapping("/api/documents")
@@ -26,4 +38,12 @@ public class DocumentController {
             return ResponseEntity.internalServerError().body("Upload failed: " + e.getMessage());
         }
     }
+
+/*     @GetMapping("/{id}")
+    public ResponseEntity<DocumentMetadata> getMetadata(@PathVariable String id) {
+        DocumentMetadata metadata = documentService.getDocumentMetadata(id);
+        return ResponseEntity.ok(metadata);
+    }
+*/
+
 }
