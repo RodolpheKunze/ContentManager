@@ -8,6 +8,7 @@ import com.example.storage.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class DocumentService {
     private final StorageService storageService;
     private final DocumentMetadataRepository metadataRepository;
+    private final ElasticsearchOperations elasticsearchOperations;
     
     public DocumentMetadata uploadDocument(String filename, byte[] content, 
             String contentType, Map<String, String> customMetadata) throws Exception {
