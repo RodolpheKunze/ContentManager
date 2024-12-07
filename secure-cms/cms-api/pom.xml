@@ -26,7 +26,13 @@
             <groupId>com.example</groupId>
             <artifactId>cms-security</artifactId>
         </dependency>
-        
+        <!-- Utilities -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

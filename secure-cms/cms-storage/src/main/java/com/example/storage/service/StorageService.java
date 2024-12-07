@@ -1,5 +1,6 @@
 package com.example.storage.service;
 
+import com.example.config.StorageProperties;
 import com.example.encryption.EncryptionService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class StorageService {
     private final EncryptionService encryptionService;
+    private final StorageProperties storageProperties;
     
     @Value("${storage.endpoint}")
     private String endpoint;

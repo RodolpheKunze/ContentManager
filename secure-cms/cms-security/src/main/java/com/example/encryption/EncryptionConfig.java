@@ -4,8 +4,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import lombok.Data;
-import jakarta.annotation.PostConstruct;
 import java.security.Security;
+import jakarta.annotation.*;
 
 @Data
 @Configuration
