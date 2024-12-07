@@ -8,18 +8,19 @@
     <packaging>pom</packaging>
     
     <modules>
-        <module>cms-api</module>
-        <module>cms-core</module>
         <module>cms-security</module>
         <module>cms-storage</module>
+        <module>cms-core</module>
+        <module>cms-api</module>
         <module>docker</module>
     </modules>
     
     <properties>
         <java.version>21</java.version>
-        <spring.boot.version>3.2.0</spring.boot.version>
+        <spring.boot.version>3.4.0</spring.boot.version>
         <elasticsearch.version>8.11.0</elasticsearch.version>
-        <bouncycastle.version>1.70</bouncycastle.version>
+        <bouncycastle.version>1.79</bouncycastle.version>
+        <aws.sdk.version>2.20.43</aws.sdk.version>
         <aws.sdk.version>2.20.43</aws.sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
