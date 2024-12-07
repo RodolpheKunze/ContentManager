@@ -73,11 +73,10 @@ public class StorageService {
             .bucket(bucket)
             .key(key)
             .build();
-            
-        String encryptedContent = getS3Client().getObject(request)
-            .readAllBytes()
-            .toString();
-            
+
+        byte[] rawBytes = getS3Client().getObject(request)
+            .readAllBytes();
+        String encryptedContent = new String(rawBytes); 
         // Decrypt content
         return encryptionService.decrypt(encryptedContent, masterKey);
     }

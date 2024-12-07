@@ -9,7 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -41,16 +45,14 @@ public class DocumentService {
         metadata.setLastModifiedDate(LocalDateTime.now());
         metadata.setCustomMetadata(customMetadata);
         
-        System.out.println("Saved document with ID: " + metadata.getStorageKey()); // Debug log
-        
         return metadataRepository.save(metadata);
     }
     
-    public byte[] downloadDocument(String id) throws Exception {
-        DocumentMetadata metadata = metadataRepository.findById(id)
+    public byte[] downloadDocument(String storageKey) throws Exception {
+        DocumentMetadata metadata = metadataRepository.findByStorageKey(storageKey)
             .orElseThrow(() -> new RuntimeException("Document not found"));
-            
-        return storageService.downloadDocument(metadata.getStorageKey());
+            byte[] content = storageService.downloadDocument(storageKey);
+        return storageService.downloadDocument(storageKey);
     }
     
     public Page<DocumentMetadata> searchDocuments(String query, Pageable pageable) {
@@ -61,4 +63,6 @@ public class DocumentService {
         return metadataRepository.findByStorageKey(storageKey)
             .orElseThrow(() -> new RuntimeException("Document not found: " + storageKey));
     }
+
+
 }

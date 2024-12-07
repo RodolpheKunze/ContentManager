@@ -44,4 +44,28 @@ public class DocumentController {
         DocumentMetadata metadata = documentService.getDocumentMetadata(storageKey);
         return ResponseEntity.ok(metadata);
     }
+
+    @GetMapping("/{storageKey}/download")
+    public ResponseEntity<byte[]> downloadDocument(@PathVariable String storageKey) {
+        try {
+            DocumentMetadata metadata = documentService.getDocumentMetadata(storageKey);
+            byte[] content = documentService.downloadDocument(storageKey);
+            
+            if (content == null || content.length == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, 
+                    "attachment; filename=\"" + metadata.getFilename() + "\"")
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, 
+                    HttpHeaders.CONTENT_DISPOSITION)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM) 
+                .contentLength(metadata.getSize())
+                .body(content);
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

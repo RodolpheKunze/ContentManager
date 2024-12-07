@@ -13,4 +13,5 @@ public interface DocumentMetadataRepository extends ElasticsearchRepository<Docu
     List<DocumentMetadata> findByContentType(String contentType);
     List<DocumentMetadata> findByUploadDateBetween(LocalDateTime start, LocalDateTime end);
     Optional<DocumentMetadata> findByStorageKey(String storageKey);
+    
 }
