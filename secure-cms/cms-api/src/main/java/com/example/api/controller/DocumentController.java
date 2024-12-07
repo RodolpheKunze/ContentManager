@@ -39,11 +39,9 @@ public class DocumentController {
         }
     }
 
-/*     @GetMapping("/{id}")
-    public ResponseEntity<DocumentMetadata> getMetadata(@PathVariable String id) {
-        DocumentMetadata metadata = documentService.getDocumentMetadata(id);
+    @GetMapping("/{storageKey}")
+    public ResponseEntity<DocumentMetadata> getMetadata(@PathVariable String storageKey) {
+        DocumentMetadata metadata = documentService.getDocumentMetadata(storageKey);
         return ResponseEntity.ok(metadata);
     }
-*/
-
 }
