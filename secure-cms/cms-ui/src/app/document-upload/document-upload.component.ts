@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class DocumentUploadComponent {
   selectedFile: File | null = null;
   uploadProgress: number = 0;
+  errorMessage: string = '';
 
   constructor(private documentService: DocumentService) {}
 
@@ -22,6 +23,7 @@ export class DocumentUploadComponent {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.errorMessage = ''; 
     }
   }
 
@@ -42,6 +44,8 @@ export class DocumentUploadComponent {
         },
         error: (error) => {
           console.error('Upload failed', error);
+          this.errorMessage = error.message;
+          this.uploadProgress = 0;
         }
       });
   }

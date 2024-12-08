@@ -51,7 +51,20 @@ export class DocumentService {
   }
 
   private handleError(error: any) {
-    console.error('An error occurred:', error);
-    return throwError(() => new Error('Something went wrong; please try again later.'));
+    let errorMessage = 'An unknown error occurred!';
+    console.log("error status:", error.status)
+    if (error.status === 413) {
+      errorMessage = 'File is too large. Maximum size allowed is 1MB.';
+    } else if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = error.error.message;
+    } else {
+      // Server-side error
+      errorMessage = error.error?.message || errorMessage;
+    }
+
+    console.error('Error:', error);
+    return throwError(() => ({ status: error.status, message: errorMessage }));
   }
+  
 }

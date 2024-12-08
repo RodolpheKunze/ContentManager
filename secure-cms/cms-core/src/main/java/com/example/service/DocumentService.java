@@ -4,6 +4,7 @@ package com.example.service;
 import com.example.model.DocumentMetadata;
 import com.example.repository.DocumentMetadataRepository;
 import com.example.storage.service.StorageService;
+import com.example.exception.DocumentNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,16 +69,11 @@ public class DocumentService {
         System.out.println("Searching with term: " + searchTerm);
         System.out.println("Page request: " + pageable);
     
-        NativeQuery searchQuery = NativeQuery.builder()
-        .withQuery(q -> q
-            .match(m -> m
-                .field("filename^3")
-                .query(searchTerm)
-                .fuzziness("AUTO")
-            )
-        )
-        .withPageable(pageable)
-        .build();
+        NativeQuery searchQuery = NativeQuery.builder() 
+            .withQuery(q -> q .wildcard(w -> w 
+            .field("filename") .value("*" + searchTerm + "*") ) ) 
+            .withPageable(pageable) 
+            .build();
 
         /*NativeQuery searchQuery = NativeQuery.builder()
             .withQuery(q -> q
@@ -114,7 +110,8 @@ public class DocumentService {
 
     public DocumentMetadata getDocumentMetadata(String storageKey) {
         return metadataRepository.findByStorageKey(storageKey)
-            .orElseThrow(() -> new RuntimeException("Document not found: " + storageKey));
+            .orElseThrow(() -> new DocumentNotFoundException(
+                "Document not found with storage key: " + storageKey));
     }
 
     public Page<DocumentMetadata> getAllDocuments(Pageable pageable) {
