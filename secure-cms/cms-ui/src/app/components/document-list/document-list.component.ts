@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DocumentService } from '../../service/document.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DocumentMetadata } from '../../models/document.model';
 
 interface PageResponse {
   content: any[];
@@ -25,6 +26,7 @@ export class DocumentListComponent implements OnInit {
   searchTerm: string = '';
   currentPage: number = 0;
   pageSize: number = 10;
+  totalElements: 0 ;
 
   constructor(private documentService: DocumentService) {}
 
@@ -38,6 +40,9 @@ export class DocumentListComponent implements OnInit {
         next: (response) => {
           console.log("search term:", this.searchTerm)
           this.documents = response;
+          if (this.documents.number === undefined) {
+            this.documents.number = 0;
+          }
         },
         error: (error) => {
           console.error('Failed to load documents', error);
@@ -51,18 +56,22 @@ export class DocumentListComponent implements OnInit {
   }
 
   changePage(page: number): void {
-    this.currentPage = page;
-    this.loadDocuments();
+    if (this.documents && page >= 0 && page < this.documents.totalPages) {
+      console.log("we are going to another page:",page)
+      this.currentPage = page;
+      this.loadDocuments();
+    }
   }
 
-  downloadDocument(storageKey: string): void {
-    this.documentService.downloadDocument(storageKey)
+
+  downloadDocument(doc: DocumentMetadata): void {
+    this.documentService.downloadDocument(doc.storageKey)
       .subscribe({
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'document'; // You might want to use the actual filename
+          a.download = doc.filename; // You might want to use the actual filename
           document.body.appendChild(a);
           a.click();
           window.URL.revokeObjectURL(url);

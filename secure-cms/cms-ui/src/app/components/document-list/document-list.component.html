@@ -29,7 +29,7 @@
         <td>{{ doc.uploadDate | date }}</td>
         <td>
           <button 
-            (click)="downloadDocument(doc.storageKey)"
+            (click)="downloadDocument(doc)"
             class="btn btn-sm btn-primary">
             Download
           </button>
@@ -37,19 +37,19 @@
       </tr>
     </tbody>
   </table>
-  <div class="pagination" *ngIf="documents">
-    <button 
-      [disabled]="documents.number === 0"
-      (click)="changePage(documents.number - 1)"
+  <div class="pagination" *ngIf="documents && documents.totalPages > 0">
+    <button
+      [disabled]="currentPage === 0"
+      (click)="changePage(currentPage - 1)"
       class="btn btn-secondary">
       Previous
     </button>
-    <span>Page {{documents.number + 1}} of {{documents.totalPages}}</span>
-    <button 
-      [disabled]="documents.number >= documents.totalPages - 1"
-      (click)="changePage(documents.number + 1)"
+    <span>Page {{(currentPage|| 0) + 1}} of {{documents.totalPages || 1}}</span>
+    <button
+      [disabled]="(currentPage || 0) >= (documents.totalPages - 1)"
+      (click)="changePage(currentPage + 1)"
       class="btn btn-secondary">
       Next
     </button>
-  </div>
+  </div>  
 </div>

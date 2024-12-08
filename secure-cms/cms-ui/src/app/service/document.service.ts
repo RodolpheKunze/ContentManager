@@ -54,7 +54,7 @@ export class DocumentService {
     let errorMessage = 'An unknown error occurred!';
     console.log("error status:", error.status)
     if (error.status === 413) {
-      errorMessage = 'File is too large. Maximum size allowed is 1MB.';
+      errorMessage = 'File is too large. Maximum size allowed is 10MB.';
     } else if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = error.error.message;
