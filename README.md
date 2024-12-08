@@ -1,6 +1,13 @@
 Example of a simple secure CMS using an object store and ELK as the meta data layer
 
 
+working application sample with simple angular web page.
+All the security needs to be revisited:
+- SSL
+- security between all components
+- encryption key rotation
+- encryption key via KMS
+
 example of POST and GET services
 
 POST http://localhost:8080/api/documents
