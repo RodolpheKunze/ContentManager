@@ -1,0 +1,18 @@
+<div class="upload-container">
+    <h2>Upload Document</h2>
+    <div class="form-group">
+      <input 
+        type="file" 
+        (change)="onFileSelected($event)"
+        class="form-control">
+    </div>
+    <button 
+      (click)="uploadFile()" 
+      [disabled]="!selectedFile"
+      class="btn btn-primary">
+      Upload
+    </button>
+    <div *ngIf="uploadProgress" class="progress-bar">
+      {{ uploadProgress }}%
+    </div>
+  </div>

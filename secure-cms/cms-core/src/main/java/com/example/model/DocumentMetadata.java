@@ -34,6 +34,6 @@ public class DocumentMetadata {
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
     private LocalDateTime lastModifiedDate;
 
-    @Field(type = FieldType.Object)
+    @Field(type = FieldType.Object, enabled = false)
     private Map<String, String> customMetadata;
 }

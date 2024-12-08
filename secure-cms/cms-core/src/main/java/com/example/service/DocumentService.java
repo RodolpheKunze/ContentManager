@@ -7,17 +7,25 @@ import com.example.storage.service.StorageService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.IndexOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHitSupport;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.data.domain.Sort;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,8 +63,53 @@ public class DocumentService {
         return storageService.downloadDocument(storageKey);
     }
     
-    public Page<DocumentMetadata> searchDocuments(String query, Pageable pageable) {
-        return metadataRepository.findByFilenameContaining(query, pageable);
+    public Page<DocumentMetadata> searchDocuments(String searchTerm, Pageable pageable) {
+
+        System.out.println("Searching with term: " + searchTerm);
+        System.out.println("Page request: " + pageable);
+    
+        NativeQuery searchQuery = NativeQuery.builder()
+        .withQuery(q -> q
+            .match(m -> m
+                .field("filename^3")
+                .query(searchTerm)
+                .fuzziness("AUTO")
+            )
+        )
+        .withPageable(pageable)
+        .build();
+
+        /*NativeQuery searchQuery = NativeQuery.builder()
+            .withQuery(q -> q
+                .bool(b -> b
+                    .should(s -> s
+                        .multiMatch(m -> m
+                            .query(searchTerm)
+                            .fields(List.of("filename^3", "contentType^2", "customMetadata"))
+                            .fuzziness("AUTO")
+                        )
+                    )
+                )
+            )
+            .withPageable(pageable)
+            .build();
+        */
+        System.out.println("Search query: " + searchQuery);
+        SearchHits<DocumentMetadata> searchHits = elasticsearchOperations.search(
+            searchQuery, 
+            DocumentMetadata.class
+        );
+        
+        System.out.println("Total hits: " + searchHits.getTotalHits());
+        searchHits.getSearchHits().forEach(hit -> 
+            System.out.println("Found document: " + hit.getContent().getFilename())
+        );
+
+        List<DocumentMetadata> content = searchHits.stream()
+            .map(SearchHit::getContent)
+            .collect(Collectors.toList());
+            
+        return new PageImpl<>(content, pageable, searchHits.getTotalHits());
     }
 
     public DocumentMetadata getDocumentMetadata(String storageKey) {
@@ -64,5 +117,44 @@ public class DocumentService {
             .orElseThrow(() -> new RuntimeException("Document not found: " + storageKey));
     }
 
+    public Page<DocumentMetadata> getAllDocuments(Pageable pageable) {
+        NativeQuery searchQuery = NativeQuery.builder()
+            .withQuery(q -> q
+                .matchAll(m -> m)
+            )
+            .withPageable(pageable)
+            .build();
 
+        SearchHits<DocumentMetadata> searchHits = elasticsearchOperations.search(
+            searchQuery, 
+            DocumentMetadata.class
+        );
+
+        List<DocumentMetadata> content = searchHits.stream()
+            .map(SearchHit::getContent)
+            .collect(Collectors.toList());
+            
+        return new PageImpl<>(content, pageable, searchHits.getTotalHits());
+    }
+
+public void debugElasticsearchIndex() {
+    // Get mapping
+    IndexOperations indexOps = elasticsearchOperations.indexOps(DocumentMetadata.class);
+    System.out.println("Index Mapping: " + indexOps.getMapping());
+    
+    // Get all documents
+    NativeQuery getAllQuery = NativeQuery.builder()
+        .withQuery(q -> q.matchAll(m -> m))
+        .build();
+        
+    SearchHits<DocumentMetadata> allDocs = elasticsearchOperations.search(
+        getAllQuery, 
+        DocumentMetadata.class
+    );
+    
+    System.out.println("Total documents in index: " + allDocs.getTotalHits());
+    allDocs.getSearchHits().forEach(hit -> 
+        System.out.println("Document in index: " + hit.getContent().getFilename())
+    );
+}
 }
